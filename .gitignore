@@ -2,6 +2,12 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
+Build
+Content/Variant_SideScrolling
+Content/Variant_Platforming
+Content/Variant_Combat
+.idea/
+.vsconfig
 .vscode
 .vs
 *.VC.db
