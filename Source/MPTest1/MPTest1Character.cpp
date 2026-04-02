@@ -203,7 +203,7 @@ void AMPTest1Character::CreateGameSession()
 	SessionSettings->bShouldAdvertise = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->Set(FName("MatchType"),FString("FreeForAll"),EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings->Set(FName("MatchType"),FString("MyOwnMatch"),EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	
 	
@@ -316,7 +316,7 @@ void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 				FString::Printf(TEXT("Id: %s, User: %s PlayerCount: %i" ),*Id, *User, NumOfPlayers)
 				);
 		}
-		if (MatchType == FString("FreeForAll"))
+		if (MatchType == FString("MyOwnMatch"))
 		{
 			if (GEngine)
 			{
@@ -327,7 +327,7 @@ void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 				FString::Printf(TEXT("Joining Match Type %s"),*MatchType)
 				);
 			}
-				OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
+			OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 			
 			TObjectPtr<ULocalPlayer> LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 			OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(),NAME_GameSession,Result);
