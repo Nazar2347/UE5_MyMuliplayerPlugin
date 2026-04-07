@@ -14,10 +14,27 @@ class MYSTEAMMULTIPLAYERPLUGIN_API UMSP_Menu : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
+private:
 	UFUNCTION(BlueprintCallable)
 	void MenuSetup();
 	
+	UPROPERTY(meta = (BindWidget))
+	class UButton* HostButton;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* JoinButton;
+	
+	UFUNCTION()
+	void HostButtonClicked();
+	UFUNCTION()
+	void JoinButtonClicked();
+	
+	class UMSP_SteamSessionsSubsystem* MultiplayerSessionSubsystem;
+	
+	
+	
+protected:
+	virtual bool Initialize() override;
+
 	
 	
 };
