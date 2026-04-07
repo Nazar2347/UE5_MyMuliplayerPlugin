@@ -26,6 +26,10 @@ public class MySteamMultiplayerPlugin : ModuleRules
 			new string[]
 			{
 				"Core",
+				//Menu Widgets compatability
+				"UMG",
+				"Slate",
+				"SlateCore",
 				//Online Subsystem Steam
 				"OnlineSubsystem",
 				"OnlineSubsystemSteam",

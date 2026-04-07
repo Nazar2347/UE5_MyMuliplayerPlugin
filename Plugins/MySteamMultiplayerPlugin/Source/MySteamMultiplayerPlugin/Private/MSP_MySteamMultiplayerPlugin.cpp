@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "MySteamMultiplayerPlugin.h"
+#include "MSP_MySteamMultiplayerPlugin.h"
 
 #define LOCTEXT_NAMESPACE "FMySteamMultiplayerPluginModule"
 

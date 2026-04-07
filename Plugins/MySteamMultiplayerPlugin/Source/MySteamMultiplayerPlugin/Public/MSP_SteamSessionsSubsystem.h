@@ -6,18 +6,18 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
-#include "SteamSessionsSubsystem.generated.h"
+#include "MSP_SteamSessionsSubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MYSTEAMMULTIPLAYERPLUGIN_API USteamSessionsSubsystem : public UGameInstanceSubsystem
+class MYSTEAMMULTIPLAYERPLUGIN_API UMSP_SteamSessionsSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
 public:
-	USteamSessionsSubsystem();
+	UMSP_SteamSessionsSubsystem();
 	
 	void CreateSession(int32 NumberOfPlayers, FString MatchType);
 	void FindSession(int32 MaxSearchResults);
