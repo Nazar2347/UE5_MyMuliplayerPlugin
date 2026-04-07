@@ -15,7 +15,6 @@
 #include "InputActionValue.h"
 #include "MPTest1.h"
 #include "OnlineSubsystem.h"
-
 #include "OnlineSessionSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Online/OnlineSessionNames.h"
@@ -203,15 +202,10 @@ void AMPTest1Character::CreateGameSession()
 	SessionSettings->bShouldAdvertise = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->Set(FName("MatchType"),FString("MyOwnMatch"),EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	
-	
-	
+	SessionSettings->Set(FName("MatchType"),FString("FreeForAll"),EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	
 	const TObjectPtr<ULocalPlayer> LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController(); 
-	
-	
 	OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(),NAME_GameSession, *SessionSettings); // Creating session
 }
 
@@ -224,12 +218,11 @@ void AMPTest1Character::JoinGameSession()
 	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
 	
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
-	SessionSearch->MaxSearchResults = 1000;
+	SessionSearch->MaxSearchResults = 100000;
 	SessionSearch->bIsLanQuery = false;
 	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE,true, EOnlineComparisonOp::Equals);
 	
 	const TObjectPtr<ULocalPlayer> LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	
 	OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(),SessionSearch.ToSharedRef());
 	
 	
@@ -249,7 +242,7 @@ void AMPTest1Character::OnCreateSessionComplete(FName SessionName, bool bWasSucc
 					FString::Printf(TEXT("Created session: %s"), *SessionName.ToString())
 					);
 		}
-		if (UWorld* World = GetWorld())
+		if (TObjectPtr<UWorld> World = GetWorld())
 		{
 			World->ServerTravel(FString("/Game/ThirdPerson/Lobby?listen"));
 		}
@@ -270,6 +263,12 @@ void AMPTest1Character::OnCreateSessionComplete(FName SessionName, bool bWasSucc
 
 void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 {
+	if (!OnlineSessionInterface.IsValid())
+	{
+		UE_LOG(LogMPTest1, Error, TEXT(" Online Session Interface is not valid"));
+		return;
+		
+	}
 	
 	if (bWasSuccessful)
 	{
@@ -295,10 +294,6 @@ void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 				);
 		}
 	}
-	if (!OnlineSessionInterface.IsValid())
-	{
-		return;
-	}
 	
 	for (auto Result: SessionSearch->SearchResults)
 	{
@@ -316,7 +311,7 @@ void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 				FString::Printf(TEXT("Id: %s, User: %s PlayerCount: %i" ),*Id, *User, NumOfPlayers)
 				);
 		}
-		if (MatchType == FString("MyOwnMatch"))
+		if (MatchType == FString("FreeForAll"))
 		{
 			if (GEngine)
 			{
@@ -324,15 +319,28 @@ void AMPTest1Character::OnFindSessionsComplete(bool bWasSuccessful)
 				-1,
 				15.f,
 				FColor::Cyan,
-				FString::Printf(TEXT("Joining Match Type %s"),*MatchType)
+				FString::Printf(TEXT("Joining Match Type %s of Player %s "),*MatchType, *User)
 				);
 			}
 			OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 			
 			TObjectPtr<ULocalPlayer> LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 			OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(),NAME_GameSession,Result);
+			UE_LOG(LogMPTest1, Display, TEXT("Found suitable Session"));
+			return;
 		}
+		
 	}
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+			-1,
+			15.f,
+			FColor::Red,
+			FString(TEXT("No session with suitable match were found "))
+			);
+		}
+	UE_LOG(LogMPTest1, Error, TEXT("No suitable seesion were found!"));
 }
 
 void AMPTest1Character::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)

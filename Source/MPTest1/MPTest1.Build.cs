@@ -18,11 +18,17 @@ public class MPTest1 : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
+			"Slate",
+			//-- Multiplayer
 			"OnlineSubsystem",
 			"OnlineSubsystemSteam",
+			"OnlineSubsystemUtils",
+			"SteamSockets",
+          
+			// --- UE 5.6 ADAPTER FIXES ---
+			"OnlineServicesInterface",
 			"OnlineServicesCommon",
-			"OnlineServicesOSSAdapter",
-			"Slate"
+			"OnlineServicesOSSAdapter"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
@@ -48,7 +54,7 @@ public class MPTest1 : ModuleRules
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
 		// Uncomment if you are using online features
-		 PrivateDependencyModuleNames.Add("OnlineSubsystem");
+	
 
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 	}

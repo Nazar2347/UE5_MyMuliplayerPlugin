@@ -34,6 +34,23 @@
 		{
 			"Name": "OnlineSubsystemSteam",
 			"Enabled": true
+		},
+		{
+			"Name": "SteamSockets",
+			"Enabled": true
+		},
+		{
+			"Name": "SteamShared",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineServices",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineServicesOSSAdapter",
+			"Enabled": true
 		}
+		
 	]
 }
