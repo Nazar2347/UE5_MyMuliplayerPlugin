@@ -16,17 +16,22 @@ class MYSTEAMMULTIPLAYERPLUGIN_API UMSP_Menu : public UUserWidget
 	
 private:
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup();
+	void MenuSetup(int32 NumberOfPlayers = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")));
 	
 	UPROPERTY(meta = (BindWidget))
 	class UButton* HostButton;
 	UPROPERTY(meta = (BindWidget))
 	class UButton* JoinButton;
 	
+	int32 NumPublicConnections{4};
+	FString MatchType {FString("FreeForAll")};
+	
 	UFUNCTION()
 	void HostButtonClicked();
 	UFUNCTION()
 	void JoinButtonClicked();
+	
+	void TurnOffMenu();
 	
 	class UMSP_SteamSessionsSubsystem* MultiplayerSessionSubsystem;
 	
@@ -34,7 +39,7 @@ private:
 	
 protected:
 	virtual bool Initialize() override;
-
+	virtual void NativeDestruct() override;
 	
 	
 };

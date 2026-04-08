@@ -24,8 +24,16 @@ bool UMSP_Menu::Initialize()
 	return true;
 }
 
-void UMSP_Menu::MenuSetup()
+void UMSP_Menu::NativeDestruct()
 {
+	TurnOffMenu();
+	Super::NativeDestruct();
+}
+
+void UMSP_Menu::MenuSetup(int32 NumOfPlayers, FString TypeOfMatch)
+{
+	NumPublicConnections = NumOfPlayers;
+	MatchType = TypeOfMatch;
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	bIsFocusable = true;
@@ -53,14 +61,18 @@ void UMSP_Menu::HostButtonClicked()
 	if (GEngine)
 	{
 			GEngine->AddOnScreenDebugMessage
-			(-1, 15.f,FColor::Yellow,
+			(-1, 3.f,FColor::Yellow,
 			FString(TEXT("HostButtonClicked"))
 			);
 	}
 	
 	if (MultiplayerSessionSubsystem)
 	{
-		MultiplayerSessionSubsystem->CreateSession(8,FString("FreeForAll"));
+		MultiplayerSessionSubsystem->CreateSession(NumPublicConnections, MatchType);
+		if (TObjectPtr<UWorld> World = GetWorld())
+		{
+			World->ServerTravel("/Game/ThirdPerson/Lobby?listen");
+		}
 	}
 }
 
@@ -69,9 +81,23 @@ void UMSP_Menu::JoinButtonClicked()
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage
-			(-1, 15.f,FColor::Yellow,
+			(-1, 3.f,FColor::Yellow,
 			FString(TEXT("JoinButtonClicked"))
 			);
 	}
 	
+}
+
+void UMSP_Menu::TurnOffMenu()
+{
+	RemoveFromParent(); //Remove the widget
+	if (TObjectPtr<UWorld> World = GetWorld())
+	{
+		if (TObjectPtr<APlayerController> PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeGameOnly InputModeData;
+			PlayerController->SetInputMode(InputModeData); // Enable Input for game
+			PlayerController->SetShowMouseCursor(false);
+		}
+	}
 }

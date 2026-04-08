@@ -34,6 +34,8 @@ protected:
 	void OnStartSessionComplete(FName SessionName, bool Success);
 private:
 	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<FOnlineSessionSettings> LastSessionSettings;
+	
 	
 	//Delegates for OnlineSessionInterface
 	
