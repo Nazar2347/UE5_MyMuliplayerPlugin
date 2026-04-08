@@ -71,7 +71,7 @@ void UMSP_Menu::HostButtonClicked()
 		MultiplayerSessionSubsystem->CreateSession(NumPublicConnections, MatchType);
 		if (TObjectPtr<UWorld> World = GetWorld())
 		{
-			World->ServerTravel("/Game/ThirdPerson/Lobby?listen");
+			World->ServerTravel("/Game/ThirdPerson/Lvl_ThirdPerson?listen");
 		}
 	}
 }
