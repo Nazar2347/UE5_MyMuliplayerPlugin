@@ -17,7 +17,7 @@ class MYSTEAMMULTIPLAYERPLUGIN_API UMSP_Menu : public UUserWidget
 	
 private:
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup(int32 NumberOfPlayers = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")));
+	void MenuSetup(int32 NumberOfPlayers = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = FString(TEXT("/Game/ThirdPerson/Lvl_ThirdPerson")));
 	
 	UPROPERTY(meta = (BindWidget))
 	class UButton* HostButton;
@@ -26,6 +26,7 @@ private:
 	
 	int32 NumPublicConnections{4};
 	FString MatchType {FString("FreeForAll")};
+	FString PathToSessionMap {TEXT("")};
 	
 	UFUNCTION()
 	void HostButtonClicked();

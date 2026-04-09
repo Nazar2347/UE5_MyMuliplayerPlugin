@@ -42,7 +42,7 @@ void UMSP_Menu::OnCreateSession(bool bWasSuccessful)
 		}
 		if (TObjectPtr<UWorld> World = GetWorld())
 		{
-			World->ServerTravel("/Game/ThirdPerson/Lvl_ThirdPerson?listen");
+			World->ServerTravel(PathToSessionMap);
 		}
 	}
 	else
@@ -52,6 +52,7 @@ void UMSP_Menu::OnCreateSession(bool bWasSuccessful)
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,
 				FString(TEXT("Session failed to create")));
 		}
+		HostButton->SetIsEnabled(true);
 	}
 }
 
@@ -59,6 +60,7 @@ void UMSP_Menu::OnFindSession(const TArray<FOnlineSessionSearchResult>& Sessions
 {
 	if (MultiplayerSessionSubsystem == nullptr)
 	{
+		JoinButton->SetIsEnabled(true);
 		return;
 	}
 	for (auto SearchResult : Sessions)
@@ -92,7 +94,6 @@ void UMSP_Menu::OnFindSession(const TArray<FOnlineSessionSearchResult>& Sessions
 			MultiplayerSessionSubsystem->JoinSession(SearchResult);
 			return;
 		}
-		
 	}
 	if (GEngine)
 	{
@@ -103,6 +104,9 @@ void UMSP_Menu::OnFindSession(const TArray<FOnlineSessionSearchResult>& Sessions
 		FString(TEXT("No matching sessions were found!"))
 		);
 	}
+	
+	JoinButton->SetIsEnabled(true);
+	
 }
 
 void UMSP_Menu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
@@ -120,9 +124,13 @@ void UMSP_Menu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 			if (PlayerController)
 			{
 				PlayerController->ClientTravel(Address,TRAVEL_Absolute);
+				TurnOffMenu();
 			}
 		}
-			
+	}
+	if (Result!=EOnJoinSessionCompleteResult::Success)
+	{
+		JoinButton->SetIsEnabled(true);
 	}
 }
 
@@ -134,8 +142,9 @@ void UMSP_Menu::OnLaunchSession(bool Success)
 {
 }
 
-void UMSP_Menu::MenuSetup(int32 NumOfPlayers, FString TypeOfMatch)
+void UMSP_Menu::MenuSetup(int32 NumOfPlayers, FString TypeOfMatch, FString LobbyPath)
 {
+	PathToSessionMap = FString::Printf(TEXT("%s?listen"),*LobbyPath);
 	NumPublicConnections = NumOfPlayers;
 	MatchType = TypeOfMatch;
 	AddToViewport();
@@ -172,6 +181,7 @@ void UMSP_Menu::MenuSetup(int32 NumOfPlayers, FString TypeOfMatch)
 
 void UMSP_Menu::HostButtonClicked()
 {
+	HostButton->SetIsEnabled(false);
 	if (GEngine)
 	{
 			GEngine->AddOnScreenDebugMessage
@@ -188,6 +198,7 @@ void UMSP_Menu::HostButtonClicked()
 
 void UMSP_Menu::JoinButtonClicked()
 {
+	JoinButton->SetIsEnabled(false);
 	if (MultiplayerSessionSubsystem)
 	{
 		MultiplayerSessionSubsystem->FindSession(10000);

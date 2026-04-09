@@ -48,6 +48,10 @@ protected:
 	void OnDestroySessionComplete(FName SessionName, bool Success);
 	void OnStartSessionComplete(FName SessionName, bool Success);
 private:
+	bool bCreateSessionOnDestroy {false};
+	int32 LastNumberOfPlayers;
+	FString LastMatchType;
+	
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSettings> LastSessionSettings;
 	TSharedPtr<FOnlineSessionSearch>LastSessionSearch;

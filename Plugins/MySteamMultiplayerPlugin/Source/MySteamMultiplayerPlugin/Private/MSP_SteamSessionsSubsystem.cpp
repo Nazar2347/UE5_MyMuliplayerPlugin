@@ -34,7 +34,11 @@ void UMSP_SteamSessionsSubsystem::CreateSession(int32 NumberOfPlayers, FString M
 	auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistingSession != nullptr)
 	{
-		SessionInterface->DestroySession(NAME_GameSession); // if  exists - then destroy
+		bCreateSessionOnDestroy = true;
+		LastNumberOfPlayers = NumberOfPlayers;
+		LastMatchType= MatchType;
+		
+		DestroySession();// if  exists - then destroy
 	}
 	//Store Delegate in Delegate Handle for managment
 	CreateSessionCompleteDelegateHandle = SessionInterface ->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
@@ -106,6 +110,16 @@ void UMSP_SteamSessionsSubsystem::JoinSession(const FOnlineSessionSearchResult& 
 
 void UMSP_SteamSessionsSubsystem::DestroySession()
 {
+	if (!SessionInterface.IsValid())
+	{
+		CustomOnDestroySessionCompleteDelegate.Broadcast(false);
+		return;
+	}
+	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
+	if (!SessionInterface->DestroySession(NAME_GameSession))
+	{
+		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+	}
 }
 
 void UMSP_SteamSessionsSubsystem::StartSession()
@@ -151,6 +165,18 @@ void UMSP_SteamSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJo
 
 void UMSP_SteamSessionsSubsystem::OnDestroySessionComplete(FName SessionName, bool Success)
 {
+	if (SessionInterface)
+	{
+		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+	}
+	if (Success && bCreateSessionOnDestroy)
+	{
+		bCreateSessionOnDestroy = false;
+		CreateSession(LastNumberOfPlayers,LastMatchType);
+		
+	}
+	CustomOnDestroySessionCompleteDelegate.Broadcast(Success);
+	
 }
 
 void UMSP_SteamSessionsSubsystem::OnStartSessionComplete(FName SessionName, bool Success)
