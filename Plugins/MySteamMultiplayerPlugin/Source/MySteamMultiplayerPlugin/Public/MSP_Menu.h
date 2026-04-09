@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MSP_Menu.generated.h"
 
 /**
@@ -37,9 +38,18 @@ private:
 	
 	
 	
+	
 protected:
 	virtual bool Initialize() override;
 	virtual void NativeDestruct() override;
 	
-	
+	//Callbacks for my own SteamSubsytem
+	UFUNCTION()
+	void OnCreateSession(bool bWasSuccessful);
+	void OnFindSession(const TArray<FOnlineSessionSearchResult>& Sessions, bool Successful);
+	void OnJoinSession(EOnJoinSessionCompleteResult::Type Result);
+	UFUNCTION()
+	void OnAbandomSession(bool Success);
+	UFUNCTION()
+	void OnLaunchSession(bool Success);
 };
