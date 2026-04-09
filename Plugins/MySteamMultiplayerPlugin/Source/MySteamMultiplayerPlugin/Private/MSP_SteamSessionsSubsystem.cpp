@@ -46,6 +46,7 @@ void UMSP_SteamSessionsSubsystem::CreateSession(int32 NumberOfPlayers, FString M
 	LastSessionSettings->bShouldAdvertise = true;
 	LastSessionSettings->bUseLobbiesIfAvailable = true;
 	LastSessionSettings->bUsesPresence = true;
+	LastSessionSettings->BuildUniqueId = 1;
 	LastSessionSettings->Set(FName("MatchType"),MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	const TObjectPtr<ULocalPlayer> LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
